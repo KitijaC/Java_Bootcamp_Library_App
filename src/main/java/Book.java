@@ -1,4 +1,6 @@
-public class Book {
+import java.io.Serializable;
+
+public class Book implements Serializable {
 
     private String title;
     private String author;
@@ -42,6 +44,18 @@ public class Book {
 
     public void setAvailableCopies(int availableCopies) {
         this.availableCopies = availableCopies;
+    }
+
+    public void decreaseAvailableCopies() {
+        if (availableCopies > 0) {
+            availableCopies--;
+        }
+    }
+
+    public void increaseAvailableCopies() {
+        if (availableCopies < totalCopies) {
+            availableCopies++;
+        }
     }
 
     @Override

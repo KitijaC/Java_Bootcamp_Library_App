@@ -1,7 +1,8 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class User {
+public class User implements Serializable {
 
     private String name;
     private List<Book> borrowedBooks;
@@ -25,6 +26,18 @@ public class User {
 
     public void setBorrowedBooks(List<Book> borrowedBooks) {
         this.borrowedBooks = borrowedBooks;
+    }
+
+    public void borrowBook(Book book) {
+        borrowedBooks.add(book);
+    }
+
+    public void returnBook(Book book) {
+        borrowedBooks.remove(book);
+    }
+
+    public boolean hasBorrowedBook(Book book) {
+        return borrowedBooks.contains(book);
     }
 
     @Override
