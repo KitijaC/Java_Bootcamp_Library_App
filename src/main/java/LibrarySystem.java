@@ -81,6 +81,16 @@ public class LibrarySystem implements Serializable {
         }
     }
 
+    public void getAvailableBooks() {
+        System.out.println("Available Books:");
+        for (Book book : books) {
+            if (book.getAvailableCopies() > 0) {
+                System.out.println(book.getTitle() + " by " + book.getAuthor() +
+                        " - Available Copies: " + book.getAvailableCopies());
+            }
+        }
+    }
+
     public List<Book> searchBooks(String keyword) {
         List<Book> searchResults = new ArrayList<>();
         for (Book book : books) {
@@ -93,8 +103,26 @@ public class LibrarySystem implements Serializable {
     }
 
     public void saveToCSV(String fileName) {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
-            oos.writeObject(this);
+        try (PrintWriter writer = new PrintWriter(new FileWriter(fileName))) {
+
+            writer.println("Title,Author,Total Copies,Available Copies");
+
+            for (Book book : books) {
+                writer.println(book.getTitle() + "," + book.getAuthor() + ","
+                        + book.getTotalCopies() + "," + book.getAvailableCopies());
+            }
+
+            for (User user : users) {
+                writer.println(user.getName());
+            }
+
+
+            for (Map.Entry<User, Integer> entry : userBorrowedBooksCount.entrySet()) {
+                User user = entry.getKey();
+                int count = entry.getValue();
+                writer.println(user.getName() + "," + count);
+            }
+
             System.out.println("Library data saved to " + fileName);
         } catch (IOException e) {
             e.printStackTrace();
@@ -104,6 +132,8 @@ public class LibrarySystem implements Serializable {
     public static LibrarySystem loadFromCSV(String fileName) {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
             return (LibrarySystem) ois.readObject();
+        } catch (FileNotFoundException e) {
+            return new LibrarySystem();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
             return null;

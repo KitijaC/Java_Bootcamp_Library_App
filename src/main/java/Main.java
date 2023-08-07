@@ -1,6 +1,8 @@
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
+
     public static void main(String[] args) {
         LibrarySystem librarySystem = new LibrarySystem();
         Scanner scanner = new Scanner(System.in);
@@ -19,7 +21,8 @@ public class Main {
             System.out.println("5. Return Book");
             System.out.println("6. Get Statistics");
             System.out.println("7. Search Books");
-            System.out.println("8. Exit");
+            System.out.println("8. Display All Available Books");
+            System.out.println("9. Exit");
 
             System.out.print("Enter your choice: ");
             int choice = scanner.nextInt();
@@ -52,20 +55,62 @@ public class Main {
                     librarySystem.registerUser(userName);
                     break;
                 case 4:
-                    // Borrow Book
+                    System.out.print("Enter borrower's name: ");
+                    String borrowerName = scanner.nextLine();
+                    User borrower = findUserByName(librarySystem, borrowerName);
+                    if (borrower == null) {
+                        System.out.println("User not found.");
+                    } else {
+                        System.out.print("Enter book title: ");
+                        String bookTitle = scanner.nextLine();
+                        Book requestedBook = findBookByTitle(librarySystem, bookTitle);
+                        if (requestedBook == null) {
+                            System.out.println("Book not found.");
+                        } else {
+                            librarySystem.borrowBook(borrower, requestedBook);
+                        }
+                    }
                     break;
                 case 5:
-                    // Return Book
+                    System.out.print("Enter returner's name: ");
+                    String returnerName = scanner.nextLine();
+                    User returner = findUserByName(librarySystem, returnerName);
+                    if (returner == null) {
+                        System.out.println("User not found.");
+                    } else {
+                        System.out.print("Enter book title: ");
+                        String returnedBookTitle = scanner.nextLine();
+                        Book returnedBook = findBookByTitle(librarySystem, returnedBookTitle);
+                        if (returnedBook == null) {
+                            System.out.println("Book not found.");
+                        } else {
+                            librarySystem.returnBook(returner, returnedBook);
+                        }
+                    }
                     break;
+
                 case 6:
                     librarySystem.getStatistics();
                     break;
                 case 7:
                     System.out.print("Enter search keyword: ");
-                    String keyword = scanner.nextLine();
-                    librarySystem.searchBooks(keyword);
+                    String searchKeyword = scanner.nextLine();
+                    List<Book> searchResults = librarySystem.searchBooks(searchKeyword);
+
+                    if (searchResults.isEmpty()) {
+                        System.out.println("No books found matching the search keyword.");
+                    } else {
+                        System.out.println("Search Results:");
+                        for (Book book : searchResults) {
+                            System.out.println("Title: " + book.getTitle() + ", Author: " + book.getAuthor() +
+                                    ", Available Copies: " + book.getAvailableCopies());
+                        }
+                    }
                     break;
                 case 8:
+                    librarySystem.getAvailableBooks();
+                    break;
+                case 9:
                     librarySystem.saveToCSV("library_data.ser");
                     System.out.println("Library data saved. Exiting...");
                     scanner.close();
@@ -76,6 +121,17 @@ public class Main {
             }
         }
     }
+
+
+    private static User findUserByName(LibrarySystem librarySystem, String borrowerName) {
+        for (User user : librarySystem.getUsers()) {
+            if (user.getName().equalsIgnoreCase(borrowerName)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
 
     private static Book findBookByTitle(LibrarySystem librarySystem, String title) {
         for (Book book : librarySystem.getBooks()) {
