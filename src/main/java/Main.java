@@ -4,13 +4,12 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-        LibrarySystem librarySystem = new LibrarySystem();
-        Scanner scanner = new Scanner(System.in);
-
-        librarySystem = LibrarySystem.loadFromCSV("library_data.ser");
+        LibrarySystem librarySystem = LibrarySystem.loadFromCSV("library_data.csv");
         if (librarySystem == null) {
             librarySystem = new LibrarySystem();
         }
+
+        Scanner scanner = new Scanner(System.in);
 
         while (true) {
             System.out.println("Welcome to the Library Management System");
@@ -111,7 +110,7 @@ public class Main {
                     librarySystem.getAvailableBooks();
                     break;
                 case 9:
-                    librarySystem.saveToCSV("library_data.ser");
+                    librarySystem.saveToCSV("library_data.csv");
                     System.out.println("Library data saved. Exiting...");
                     scanner.close();
                     System.exit(0);
